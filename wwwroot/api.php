@@ -521,6 +521,71 @@ try {
                                                  'parent_entity_id' => $_REQUEST['parent_entity_id'],
                                                  'child_entity_id' => $_REQUEST['child_entity_id'] ) );
                 break;
+        // unlink two entities (most often used for server / chassis unmounting)
+        //    UI equivalent: /index.php?module=redirect&page=object&tab=edit&op=unlinkObjects& ...
+        //    UI handler: unlinkObjects()
+        case 'unlink_entities':
+	        require_once 'inc/init.php';
+
+                assertStringArg ('parent_entity_type', TRUE);
+                assertUIntArg ('parent_entity_id', TRUE);
+                assertStringArg ('child_entity_type', TRUE);
+                assertUIntArg ('child_entity_id', TRUE);
+
+                usePreparedDeleteBlade
+                  (
+                   'EntityLink',
+                   array
+                   (
+                    'parent_entity_type' => $_REQUEST['parent_entity_type'],
+                    'parent_entity_id' => $_REQUEST['parent_entity_id'],
+                    'child_entity_type' => $_REQUEST['child_entity_type'],
+                    'child_entity_id' => $_REQUEST['child_entity_id'],
+                    )
+                   );
+
+                sendAPIResponse( array(), array( 'message' => 'entities unlinked successfully',
+                                                 'parent_entity_id' => $_REQUEST['parent_entity_id'],
+                                                 'child_entity_id' => $_REQUEST['child_entity_id'] ) );
+                break;
+        // update entity link  (most often used for server / chassis remounting)
+        //    UI equivalent: none
+        //    UI handler: none
+        case 'update_entity_link':
+	        require_once 'inc/init.php';
+
+                assertStringArg ('new_parent_entity_type', TRUE);
+                assertUIntArg ('new_parent_entity_id', TRUE);
+                assertStringArg ('new_child_entity_type', TRUE);
+                assertUIntArg ('new_child_entity_id', TRUE);
+                assertStringArg ('old_parent_entity_type', TRUE);
+                assertUIntArg ('old_parent_entity_id', TRUE);
+                assertStringArg ('old_child_entity_type', TRUE);
+                assertUIntArg ('old_child_entity_id', TRUE);
+
+                usePreparedUpdateBlade
+                  (
+                   'EntityLink',
+                   array
+                   (
+                    'parent_entity_type' => $_REQUEST['new_parent_entity_type'],
+                    'parent_entity_id' => $_REQUEST['new_parent_entity_id'],
+                    'child_entity_type' => $_REQUEST['new_child_entity_type'],
+                    'child_entity_id' => $_REQUEST['new_child_entity_id'],
+                    ),
+                   array
+                   (
+                    'parent_entity_type' => $_REQUEST['old_parent_entity_type'],
+                    'parent_entity_id' => $_REQUEST['old_parent_entity_id'],
+                    'child_entity_type' => $_REQUEST['old_child_entity_type'],
+                    'child_entity_id' => $_REQUEST['old_child_entity_id'],
+                    )
+                   );
+
+                sendAPIResponse( array(), array( 'message' => 'updated entity link successfully',
+                                                 'parent_entity_id' => $_REQUEST['new_parent_entity_id'],
+                                                 'child_entity_id' => $_REQUEST['new_child_entity_id'] ) );
+                break;
 
 
         // add one object
